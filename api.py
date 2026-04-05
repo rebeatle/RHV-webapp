@@ -33,7 +33,7 @@ def obtener_eventos_servidor(server_id: str, access_token: str) -> list:
         res = requests.post(
             ENDPOINT_EVENTS,
             json={"serverid": server_id, "accessToken": access_token},
-            timeout=10
+            timeout=15
         )
         res.raise_for_status()
         return res.json().get("events", [])
