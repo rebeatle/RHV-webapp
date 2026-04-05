@@ -29,8 +29,10 @@ RHV Web solves that: a single screen accessible from any browser,
 with all your upcoming events, filters, color coding by date proximity,
 and a mark showing which ones you're already signed up for.
 
-![Main view](screenshots/main_view.png)
-![Configuration](screenshots/config.png)
+![Main view](screenshots/main_view1.png)
+![Main view](screenshots/main_view2.png)
+![Configuration](screenshots/config1.png)
+![Configuration](screenshots/config2.png)
 
 ---
 

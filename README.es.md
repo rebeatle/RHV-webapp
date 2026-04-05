@@ -29,8 +29,10 @@ RHV Web resuelve eso: una sola pantalla accesible desde cualquier navegador,
 con todos tus eventos futuros, filtros, colores por proximidad de fecha,
 y la marca de en cuáles ya estás anotado.
 
-![Vista principal](screenshots/main_view.png)
-![Configuración](screenshots/config.png)
+![Main view](screenshots/main_view1.png)
+![Main view](screenshots/main_view2.png)
+![Configuration](screenshots/config1.png)
+![Configuration](screenshots/config2.png)
 
 ---
 
