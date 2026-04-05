@@ -105,6 +105,7 @@ let _fallidos     = [];
 let _accessToken  = '';
 let _apiKey       = '';
 let _refreshTimer = null;
+let _retryTimer   = null;
 let _tokenExpired = false;
 
 // ── Init ───────────────────────────────────────────────────────────
@@ -159,7 +160,12 @@ function goConfig() {
 }
 
 // ── Load events from server ────────────────────────────────────────
+function cancelRetry() {
+  if (_retryTimer) { clearTimeout(_retryTimer); _retryTimer = null; }
+}
+
 async function loadEvents() {
+  cancelRetry();
   setStatus('loading');
   showLoading(true);
 
@@ -194,9 +200,9 @@ async function loadEvents() {
     renderTable(getFilteredEvents());
     setStatus('ok');
 
-    // Reintento silencioso para servidores que no respondieron
+    // Primer reintento silencioso 5s después de terminar la carga
     if (_fallidos.length > 0) {
-      setTimeout(retryFallidos, 3000);
+      _retryTimer = setTimeout(() => retryFallidos(0), 5000);
     }
   } catch {
     setStatus('error');
@@ -339,7 +345,7 @@ function renderTable(eventos) {
 }
 
 // ── Silent retry for failed servers ───────────────────────────────
-async function retryFallidos() {
+async function retryFallidos(attempt) {
   if (!_fallidos.length) return;
   try {
     const res = await fetch('/api/reintentar', {
@@ -352,21 +358,25 @@ async function retryFallidos() {
       })
     });
     const data = await res.json();
-    if (!data.ok || !data.eventos.length) return;
-
-    // Merge evitando duplicados por raidId
-    const existingIds = new Set(_allEvents.map(ev => String(ev.raidId)));
-    const nuevos      = data.eventos.filter(ev => !existingIds.has(String(ev.raidId)));
-    if (!nuevos.length) return;
-
-    _allEvents = [..._allEvents, ...nuevos].sort((a, b) => a.unixtime - b.unixtime);
-    _fallidos  = data.fallidos || [];
-
-    updateServerSelect();
-    renderTable(getFilteredEvents());
+    if (data.ok && data.eventos.length) {
+      // Merge evitando duplicados por raidId
+      const existingIds = new Set(_allEvents.map(ev => String(ev.raidId)));
+      const nuevos      = data.eventos.filter(ev => !existingIds.has(String(ev.raidId)));
+      if (nuevos.length) {
+        _allEvents = [..._allEvents, ...nuevos].sort((a, b) => a.unixtime - b.unixtime);
+        updateServerSelect();
+        renderTable(getFilteredEvents());
+      }
+    }
+    _fallidos = data.fallidos || [];
     setStatus('ok');
   } catch {
-    // Silencioso — no mostrar error si el reintento falla
+    // Silencioso
+  } finally {
+    // Encadenar siguiente intento si quedan fallidos y no se agotaron los intentos
+    if (_fallidos.length > 0 && attempt < 2) {
+      _retryTimer = setTimeout(() => retryFallidos(attempt + 1), 20000);
+    }
   }
 }
 
