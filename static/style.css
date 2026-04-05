@@ -239,6 +239,51 @@ label {
 }
 .step-actions button { flex: 1; }
 
+/* Settings menu (config page - returning user) */
+.settings-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+.settings-btn {
+  width: 100%;
+  text-align: left;
+  padding: 13px 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.settings-btn:hover {
+  background: var(--border);
+  border-color: var(--accent);
+}
+.settings-btn.danger { color: var(--today); }
+.settings-btn.danger:hover {
+  background: rgba(237,66,69,0.12);
+  border-color: var(--today);
+}
+.settings-btn.back {
+  color: var(--accent);
+  background: transparent;
+  border-color: transparent;
+  font-size: 13px;
+  padding: 6px 4px;
+}
+.settings-btn.back:hover {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text);
+}
+.settings-icon { font-size: 16px; }
+
 /* Lang selector on config */
 .config-lang {
   position: absolute;
