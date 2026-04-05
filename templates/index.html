@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚔ RaidHelper Viewer</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="app-layout">
+
+  <!-- ── Header ── -->
+  <header class="app-header">
+    <h1>⚔ RaidHelper Viewer</h1>
+    <div class="header-actions">
+      <span class="status-badge" id="status-badge">⏳</span>
+      <button class="btn-ghost" id="btn-reload" onclick="loadEvents()">🔄 <span data-i18n="recargar"></span></button>
+      <button class="btn-ghost" id="btn-config" onclick="goConfig()">⚙ <span data-i18n="configuracion"></span></button>
+      <button class="btn-ghost" id="btn-lang" onclick="toggleLang()">🌐</button>
+    </div>
+  </header>
+
+  <!-- ── Filter bar ── -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label data-i18n="periodo"></label>
+      <select id="sel-dias">
+        <option value="7"  data-i18n-opt="dias7"></option>
+        <option value="14" data-i18n-opt="dias14"></option>
+        <option value="30" data-i18n-opt="dias30"></option>
+        <option value="0"  data-i18n-opt="diasTodos"></option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label data-i18n="servidor"></label>
+      <select id="sel-servidor">
+        <option value="" data-i18n-opt="todosServ"></option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label data-i18n="buscar"></label>
+      <input type="text" id="inp-buscar">
+    </div>
+    <div class="filter-group">
+      <label data-i18n="fecha"></label>
+      <input type="text" id="inp-fecha">
+    </div>
+  </div>
+
+  <!-- ── Table area ── -->
+  <div class="table-wrapper" id="table-wrapper">
+
+    <div class="loading-overlay hidden" id="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+
+    <div class="empty-state hidden" id="empty-state">
+      <span id="empty-msg"></span>
+    </div>
+
+    <table id="eventos-table">
+      <thead>
+        <tr>
+          <th data-i18n="colInscrito"></th>
+          <th data-i18n="colFecha"></th>
+          <th data-i18n="colHora"></th>
+          <th data-i18n="colServidor"></th>
+          <th data-i18n="colRaid"></th>
+          <th data-i18n="colPartic"></th>
+          <th data-i18n="colRol"></th>
+        </tr>
+      </thead>
+      <tbody id="eventos-body"></tbody>
+    </table>
+
+  </div>
+
+  <!-- ── Modal ── -->
+  <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal-box" id="modal-box">
+      <button class="modal-close-btn" id="modal-close">✕ ESC</button>
+      <div class="modal-content" id="modal-content">
+        <div class="spinner" style="margin:40px auto"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RaidHelper Viewer — Setup</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="config-page">
+
+  <!-- Language toggle -->
+  <div class="config-lang">
+    <button class="btn-ghost" onclick="setLang('es')" id="btn-es">ES</button>
+    <button class="btn-ghost" onclick="setLang('en')" id="btn-en">EN</button>
+  </div>
+
+  <div class="config-logo">
+    <h1>⚔ RaidHelper Viewer</h1>
+    <p id="logo-sub">Configuración inicial</p>
+  </div>
+
+  <div class="wizard-card">
+
+    <!-- Steps indicator -->
+    <div class="steps-indicator">
+      <div class="step-dot active" id="dot-1">1</div>
+      <div class="step-line" id="line-1"></div>
+      <div class="step-dot" id="dot-2">2</div>
+      <div class="step-line" id="line-2"></div>
+      <div class="step-dot" id="dot-3">3</div>
+    </div>
+
+    <!-- Step 1: Access Token -->
+    <div class="step-content active" id="step-1">
+      <h2 id="s1-title">Access Token</h2>
+      <p id="s1-desc">Tu sesión personal en raid-helper.xyz. Sin esto la app no puede funcionar.</p>
+
+      <button class="instructions-toggle" id="instr-toggle" onclick="toggleInstructions()">
+        <span class="arrow">▶</span>
+        <span id="instr-label">¿Cómo obtenerlo?</span>
+      </button>
+      <div class="instructions-body" id="instr-body">
+        <ol>
+          <li id="i1">Ve a <code>https://raid-helper.xyz</code> e inicia sesión con Discord.</li>
+          <li id="i2">Abre el calendario de cualquier servidor.</li>
+          <li id="i3">Presiona <code>F12</code> para abrir DevTools.</li>
+          <li id="i4">Ve a la pestaña <code>Network</code> y filtra por <code>Fetch/XHR</code>.</li>
+          <li id="i5">Recarga la página con <code>F5</code>.</li>
+          <li id="i6">Busca la llamada <code>events/</code> en la lista.</li>
+          <li id="i7">Click → pestaña <code>Payload</code>.</li>
+          <li id="i8">Verás: <code>{"accessToken":"TU_TOKEN_AQUÍ"}</code></li>
+          <li id="i9">Copia solo el valor del accessToken (la cadena larga, sin comillas).</li>
+        </ol>
+      </div>
+
+      <input id="inp-token" type="text" autocomplete="off" spellcheck="false">
+      <div id="token-error" class="error-msg hidden"></div>
+      <div id="servers-preview" class="hidden">
+        <div class="success-msg" id="servers-ok-msg"></div>
+        <div class="server-list" id="server-list"></div>
+      </div>
+      <div class="step-actions">
+        <button class="btn-primary" onclick="verificarToken()" id="btn-verificar">Verificar</button>
+      </div>
+    </div>
+
+    <!-- Step 2: API Key -->
+    <div class="step-content" id="step-2">
+      <h2 id="s2-title">User API Key <span style="color:var(--muted);font-size:13px;font-weight:400" id="s2-opt">(opcional)</span></h2>
+      <p id="s2-desc">Permite marcar con ✅ los eventos donde ya estás anotado. Si no la tenés, podés saltar este paso.</p>
+      <p id="s2-how" style="color:var(--muted);font-size:12px;margin-bottom:16px">
+        Obtenerla: en Discord → bot Raid Helper → DM → <code>/usersettings apikey show</code>
+      </p>
+      <input id="inp-apikey" type="text" autocomplete="off" spellcheck="false">
+      <div class="step-actions">
+        <button class="btn-secondary" onclick="saltarApiKey()" id="btn-saltar">Saltar</button>
+        <button class="btn-primary"   onclick="guardarApiKey()" id="btn-continuar">Continuar</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Confirmation -->
+    <div class="step-content" id="step-3">
+      <h2 id="s3-title">¡Todo listo!</h2>
+      <p id="s3-desc">Tus credenciales se guardaron localmente en tu navegador. El servidor nunca las almacena.</p>
+      <div class="server-list" id="server-list-final"></div>
+      <div class="step-actions" style="margin-top:20px">
+        <button class="btn-primary" onclick="entrar()" id="btn-entrar">Entrar a la app →</button>
+      </div>
+    </div>
+
+  </div><!-- /wizard-card -->
+
+<script>
+// ── i18n ──────────────────────────────────────────────────────────
+const STRINGS = {
+  es: {
+    logoSub:        "Configuración inicial",
+    s1Title:        "Access Token",
+    s1Desc:         "Tu sesión personal en raid-helper.xyz. Sin esto la app no puede funcionar.",
+    instrLabel:     "¿Cómo obtenerlo?",
+    instr:          ["Ve a <code>https://raid-helper.xyz</code> e inicia sesión con Discord.",
+                     "Abre el calendario de cualquier servidor.",
+                     "Presiona <code>F12</code> para abrir DevTools.",
+                     "Ve a la pestaña <code>Network</code> y filtra por <code>Fetch/XHR</code>.",
+                     "Recarga la página con <code>F5</code>.",
+                     "Busca la llamada <code>events/</code> en la lista.",
+                     "Click → pestaña <code>Payload</code>.",
+                     "Verás: <code>{\"accessToken\":\"TU_TOKEN_AQUÍ\"}</code>",
+                     "Copia solo el valor del accessToken (cadena larga, sin comillas)."],
+    tokenPlaceholder: "Pega tu accessToken aquí...",
+    btnVerificar:   "Verificar",
+    errVacio:       "El token no puede estar vacío.",
+    errInvalido:    "Token inválido o expirado. Verificá tus credenciales.",
+    serversOk:      "{n} servidor(es) detectado(s):",
+    s2Title:        "User API Key",
+    s2Opt:          "(opcional)",
+    s2Desc:         "Permite marcar con ✅ los eventos donde ya estás anotado. Si no la tenés, podés saltar este paso.",
+    s2How:          "Obtenerla: en Discord → bot Raid Helper → DM → <code>/usersettings apikey show</code>",
+    apikeyPlaceholder: "Pega tu User API Key...",
+    btnSaltar:      "Saltar",
+    btnContinuar:   "Continuar",
+    s3Title:        "¡Todo listo!",
+    s3Desc:         "Tus credenciales se guardaron localmente en tu navegador. El servidor nunca las almacena.",
+    btnEntrar:      "Entrar a la app →",
+    premium:        "★ premium",
+  },
+  en: {
+    logoSub:        "Initial Setup",
+    s1Title:        "Access Token",
+    s1Desc:         "Your personal session on raid-helper.xyz. The app cannot work without this.",
+    instrLabel:     "How to get it?",
+    instr:          ["Go to <code>https://raid-helper.xyz</code> and log in with Discord.",
+                     "Open the calendar for any server.",
+                     "Press <code>F12</code> to open DevTools.",
+                     "Go to the <code>Network</code> tab and filter by <code>Fetch/XHR</code>.",
+                     "Reload the page with <code>F5</code>.",
+                     "Find the <code>events/</code> call in the list.",
+                     "Click it → <code>Payload</code> tab.",
+                     "You'll see: <code>{\"accessToken\":\"YOUR_TOKEN_HERE\"}</code>",
+                     "Copy only the accessToken value (the long string, no quotes)."],
+    tokenPlaceholder: "Paste your accessToken here...",
+    btnVerificar:   "Verify",
+    errVacio:       "Token cannot be empty.",
+    errInvalido:    "Invalid or expired token. Please check your credentials.",
+    serversOk:      "{n} server(s) detected:",
+    s2Title:        "User API Key",
+    s2Opt:          "(optional)",
+    s2Desc:         "Allows marking with ✅ the events you're signed up for. You can skip this.",
+    s2How:          "To get it: in Discord → Raid Helper bot → DM → <code>/usersettings apikey show</code>",
+    apikeyPlaceholder: "Paste your User API Key...",
+    btnSaltar:      "Skip",
+    btnContinuar:   "Continue",
+    s3Title:        "All set!",
+    s3Desc:         "Your credentials are saved locally in your browser. The server never stores them.",
+    btnEntrar:      "Enter the app →",
+    premium:        "★ premium",
+  }
+};
+
+let _lang = localStorage.getItem('rhv_lang') || 'es';
+let _servidores = [];
+
+function t(key, vars) {
+  let s = STRINGS[_lang]?.[key] ?? STRINGS['es'][key] ?? key;
+  if (vars) Object.keys(vars).forEach(k => { s = s.replace(`{${k}}`, vars[k]); });
+  return s;
+}
+
+function setLang(lang) {
+  _lang = lang;
+  localStorage.setItem('rhv_lang', lang);
+  applyLang();
+}
+
+function applyLang() {
+  document.documentElement.lang = _lang;
+  document.getElementById('logo-sub').textContent       = t('logoSub');
+  document.getElementById('s1-title').textContent       = t('s1Title');
+  document.getElementById('s1-desc').textContent        = t('s1Desc');
+  document.getElementById('instr-label').textContent    = t('instrLabel');
+  document.getElementById('inp-token').placeholder      = t('tokenPlaceholder');
+  document.getElementById('btn-verificar').textContent  = t('btnVerificar');
+  document.getElementById('s2-title').childNodes[0].textContent = t('s2Title') + ' ';
+  document.getElementById('s2-opt').textContent         = t('s2Opt');
+  document.getElementById('s2-desc').textContent        = t('s2Desc');
+  document.getElementById('s2-how').innerHTML           = t('s2How');
+  document.getElementById('inp-apikey').placeholder     = t('apikeyPlaceholder');
+  document.getElementById('btn-saltar').textContent     = t('btnSaltar');
+  document.getElementById('btn-continuar').textContent  = t('btnContinuar');
+  document.getElementById('s3-title').textContent       = t('s3Title');
+  document.getElementById('s3-desc').textContent        = t('s3Desc');
+  document.getElementById('btn-entrar').textContent     = t('btnEntrar');
+
+  const instrItems = t('instr');
+  for (let i = 0; i < instrItems.length; i++) {
+    const el = document.getElementById(`i${i+1}`);
+    if (el) el.innerHTML = instrItems[i];
+  }
+
+  document.getElementById('btn-es').style.color = _lang === 'es' ? 'var(--text)' : '';
+  document.getElementById('btn-en').style.color = _lang === 'en' ? 'var(--text)' : '';
+}
+
+// ── Instructions toggle ──────────────────────────────────────────
+function toggleInstructions() {
+  const btn  = document.getElementById('instr-toggle');
+  const body = document.getElementById('instr-body');
+  btn.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+// ── Step navigation ──────────────────────────────────────────────
+function goToStep(n) {
+  document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+  document.getElementById(`step-${n}`).classList.add('active');
+  for (let i = 1; i <= 3; i++) {
+    const dot = document.getElementById(`dot-${i}`);
+    dot.classList.remove('active', 'done');
+    if (i < n)  dot.classList.add('done');
+    if (i === n) dot.classList.add('active');
+  }
+  for (let i = 1; i <= 2; i++) {
+    const line = document.getElementById(`line-${i}`);
+    line.classList.toggle('done', i < n);
+  }
+}
+
+// ── Step 1: Verify token ─────────────────────────────────────────
+async function verificarToken() {
+  const token = document.getElementById('inp-token').value.trim();
+  const errEl = document.getElementById('token-error');
+  const prevEl = document.getElementById('servers-preview');
+  errEl.classList.add('hidden');
+  prevEl.classList.add('hidden');
+
+  if (!token) {
+    errEl.textContent = t('errVacio');
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  const btn = document.getElementById('btn-verificar');
+  btn.disabled = true;
+  btn.textContent = '⏳';
+
+  try {
+    const res  = await fetch('/api/verificar', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({accessToken: token})
+    });
+    const data = await res.json();
+
+    if (!data.ok) {
+      errEl.textContent = t('errInvalido');
+      errEl.classList.remove('hidden');
+    } else {
+      _servidores = data.servidores;
+      localStorage.setItem('rhv_token', token);
+      // Show preview
+      document.getElementById('servers-ok-msg').textContent =
+        t('serversOk', {n: _servidores.length});
+      const list = document.getElementById('server-list');
+      list.innerHTML = _servidores.map(s =>
+        `<div class="server-item">
+           <span>⚔ ${s.name}</span>
+           ${s.premium ? `<span class="premium">${t('premium')}</span>` : ''}
+         </div>`
+      ).join('');
+      prevEl.classList.remove('hidden');
+      // Auto-advance after short delay
+      setTimeout(() => goToStep(2), 900);
+    }
+  } catch {
+    errEl.textContent = t('errInvalido');
+    errEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = t('btnVerificar');
+  }
+}
+
+// ── Step 2: API Key ──────────────────────────────────────────────
+function guardarApiKey() {
+  const key = document.getElementById('inp-apikey').value.trim();
+  if (key) localStorage.setItem('rhv_apikey', key);
+  showStep3();
+}
+function saltarApiKey() {
+  localStorage.removeItem('rhv_apikey');
+  showStep3();
+}
+
+function showStep3() {
+  const list = document.getElementById('server-list-final');
+  list.innerHTML = _servidores.map(s =>
+    `<div class="server-item">
+       <span>⚔ ${s.name}</span>
+       ${s.premium ? `<span class="premium">${t('premium')}</span>` : ''}
+     </div>`
+  ).join('');
+  goToStep(3);
+}
+
+// ── Step 3: Enter app ────────────────────────────────────────────
+function entrar() {
+  window.location.href = '/';
+}
+
+// ── Enter key on inputs ──────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('inp-token').addEventListener('keydown', e => {
+    if (e.key === 'Enter') verificarToken();
+  });
+  document.getElementById('inp-apikey').addEventListener('keydown', e => {
+    if (e.key === 'Enter') guardarApiKey();
+  });
+  applyLang();
+});
+</script>
+</body>
+</html>
