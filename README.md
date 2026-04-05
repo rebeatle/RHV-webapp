@@ -14,6 +14,18 @@ Discord servers from a single screen, directly in the browser.
 
 ---
 
+> ⚠️ **Aviso / Disclaimer**
+>
+> This is an unofficial, community-built tool. It is not affiliated with,
+> endorsed by, or connected to Raid Helper or its developers in any way.
+> It uses the same internal API that the raid-helper.xyz frontend uses,
+> authenticated with your own personal session. If Raid Helper changes
+> their API, this tool may stop working until updated.
+>
+> Use at your own risk. Your credentials are never stored on the server.
+
+---
+
 ## 🌐 Live Demo
 
 **[Open the app](https://raid-helper-viewer.up.railway.app)**
@@ -187,6 +199,13 @@ Features planned for future versions:
 
 Pull requests are welcome. If something breaks due to changes in the
 Raid Helper API, open an issue.
+
+---
+
+## Contact
+
+To report bugs, suggestions, or commercial use:
+📧 rebeatle.dev@gmail.com
 
 ---
 
