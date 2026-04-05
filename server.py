@@ -47,6 +47,28 @@ def api_eventos():
     return jsonify({"ok": True, "eventos": eventos, "fallidos": fallidos})
 
 
+@app.route("/api/reintentar", methods=["POST"])
+def api_reintentar():
+    data             = request.get_json(silent=True) or {}
+    access_token     = data.get("accessToken", "").strip()
+    api_key          = data.get("apiKey", "").strip() or None
+    nombres_fallidos = data.get("fallidos", [])
+
+    if not access_token or not nombres_fallidos:
+        return jsonify({"ok": True, "eventos": [], "fallidos": []})
+
+    # Obtener lista completa y filtrar solo los servidores fallidos
+    todos_servidores = obtener_servidores_usuario(access_token)
+    fallidos_set     = set(nombres_fallidos)
+    a_reintentar     = [g for g in todos_servidores if g["name"] in fallidos_set]
+
+    if not a_reintentar:
+        return jsonify({"ok": True, "eventos": [], "fallidos": []})
+
+    eventos, aun_fallidos = obtener_todos_los_eventos(a_reintentar, access_token, api_key)
+    return jsonify({"ok": True, "eventos": eventos, "fallidos": aun_fallidos})
+
+
 @app.route("/api/detalle", methods=["POST"])
 def api_detalle():
     data = request.get_json(silent=True) or {}

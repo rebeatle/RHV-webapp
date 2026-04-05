@@ -193,6 +193,11 @@ async function loadEvents() {
     updateServerSelect();
     renderTable(getFilteredEvents());
     setStatus('ok');
+
+    // Reintento silencioso para servidores que no respondieron
+    if (_fallidos.length > 0) {
+      setTimeout(retryFallidos, 3000);
+    }
   } catch {
     setStatus('error');
   } finally {
@@ -331,6 +336,38 @@ function renderTable(eventos) {
     tr.addEventListener('click', () => openModal(ev.raidId, ev));
     tbody.appendChild(tr);
   });
+}
+
+// ── Silent retry for failed servers ───────────────────────────────
+async function retryFallidos() {
+  if (!_fallidos.length) return;
+  try {
+    const res = await fetch('/api/reintentar', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        accessToken: _accessToken,
+        apiKey:      _apiKey || '',
+        fallidos:    _fallidos,
+      })
+    });
+    const data = await res.json();
+    if (!data.ok || !data.eventos.length) return;
+
+    // Merge evitando duplicados por raidId
+    const existingIds = new Set(_allEvents.map(ev => String(ev.raidId)));
+    const nuevos      = data.eventos.filter(ev => !existingIds.has(String(ev.raidId)));
+    if (!nuevos.length) return;
+
+    _allEvents = [..._allEvents, ...nuevos].sort((a, b) => a.unixtime - b.unixtime);
+    _fallidos  = data.fallidos || [];
+
+    updateServerSelect();
+    renderTable(getFilteredEvents());
+    setStatus('ok');
+  } catch {
+    // Silencioso — no mostrar error si el reintento falla
+  }
 }
 
 // ── Modal ──────────────────────────────────────────────────────────
