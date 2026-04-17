@@ -26,6 +26,10 @@ const STRINGS = {
     colRaid:       "Raid",
     colPartic:     "👥 Participantes",
     colRol:        "Rol",
+    colAlarma:     "🔔",
+    btnAlarma:     "Crear alarma",
+    alarmaSent:    "✔ Abriendo Alarma Pro…",
+    alarmaNoApp:   "Instalá Alarma Pro y registrá el protocolo rhv:// primero.",
     placeholderBuscar: "título, servidor, líder...",
     placeholderFecha:  "dd/mm  o  dd/mm/aaaa",
     statusLoading: "⏳ Consultando...",
@@ -67,6 +71,10 @@ const STRINGS = {
     colRaid:       "Raid",
     colPartic:     "👥 Participants",
     colRol:        "Role",
+    colAlarma:     "🔔",
+    btnAlarma:     "Set alarm",
+    alarmaSent:    "✔ Opening Alarma Pro…",
+    alarmaNoApp:   "Install Alarma Pro and register the rhv:// protocol first.",
     placeholderBuscar: "title, server, leader...",
     placeholderFecha:  "dd/mm  or  dd/mm/yyyy",
     statusLoading: "⏳ Loading...",
@@ -338,6 +346,10 @@ function renderTable(eventos) {
       <td>${escHtml(titulo)}</td>
       <td class="col-partic">${ev.signupcount ?? '?'}</td>
       <td>${escHtml(rol)}</td>
+      <td class="col-alarma">
+        <button class="btn-alarm" title="${t('btnAlarma')}"
+          onclick="event.stopPropagation(); launchAlarm('${escHtml(String(ev.raidId))}')">🔔</button>
+      </td>
     `;
     tr.addEventListener('click', () => openModal(ev.raidId, ev));
     tbody.appendChild(tr);
@@ -452,6 +464,12 @@ function renderModal(detalle, signup) {
     html += `<p style="color:var(--muted);font-size:13px">${t('detSinAnotados')}</p>`;
   }
 
+  html += `
+    <div class="modal-alarm-row">
+      <button class="btn-alarm-modal" onclick="launchAlarm('${escHtml(String(detalle.raidid || detalle.raidId || ''))}')">
+        🔔 ${t('btnAlarma')}
+      </button>
+    </div>`;
   html += `<div class="modal-esc-hint">${t('detEsc')}</div>`;
   content.innerHTML = html;
 }
@@ -562,6 +580,12 @@ function formatFechaDetalle(unixtime) {
   const hh = String(dt.getHours()).padStart(2, '0');
   const mi = String(dt.getMinutes()).padStart(2, '0');
   return `${dd}/${mm}/${dt.getFullYear()} ${hh}:${mi}`;
+}
+
+// ── Alarm magnet link ──────────────────────────────────────────────
+function launchAlarm(raidId) {
+  if (!raidId) return;
+  window.location.href = `rhv://raid?id=${encodeURIComponent(raidId)}`;
 }
 
 function escHtml(str) {
