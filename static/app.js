@@ -348,7 +348,7 @@ function renderTable(eventos) {
       <td>${escHtml(rol)}</td>
       <td class="col-alarma">
         <button class="btn-alarm" title="${t('btnAlarma')}"
-          onclick="event.stopPropagation(); launchAlarm('${escHtml(String(ev.raidId))}')">🔔</button>
+          onclick="event.stopPropagation(); launchAlarm('${escHtml(String(ev.raidId))}', ${JSON.stringify(ev._signup || null)})">🔔</button>
       </td>
     `;
     tr.addEventListener('click', () => openModal(ev.raidId, ev));
@@ -466,7 +466,7 @@ function renderModal(detalle, signup) {
 
   html += `
     <div class="modal-alarm-row">
-      <button class="btn-alarm-modal" onclick="launchAlarm('${escHtml(String(detalle.raidid || detalle.raidId || ''))}')">
+      <button class="btn-alarm-modal" onclick="launchAlarm('${escHtml(String(detalle.raidid || detalle.raidId || ''))}', ${JSON.stringify(signup || null)})">
         🔔 ${t('btnAlarma')}
       </button>
     </div>`;
@@ -583,9 +583,15 @@ function formatFechaDetalle(unixtime) {
 }
 
 // ── Alarm magnet link ──────────────────────────────────────────────
-function launchAlarm(raidId) {
+function launchAlarm(raidId, signup) {
   if (!raidId) return;
-  window.location.href = `rhv://raid?id=${encodeURIComponent(raidId)}`;
+  const p = new URLSearchParams({ id: String(raidId) });
+  if (signup) {
+    if (signup.name)      p.set('sn', signup.name);
+    if (signup.specName)  p.set('ss', signup.specName);
+    if (signup.className) p.set('sc', signup.className);
+  }
+  window.location.href = `rhv://raid?${p.toString()}`;
 }
 
 function escHtml(str) {
