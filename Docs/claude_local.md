@@ -13,7 +13,8 @@ Siempre responde en español.
 
 ## Instrucciones Entre sesiones
 
-- Comienza siempre leyendo claude_local.md (Normalmente la encontraras en la carpeta "Docs" de la raiz del proyecto)
+- Comienza siempre leyendo claude_local.md (Normalmente la encontrarás en la carpeta "Docs" de la raíz del proyecto).
+- Si claude_local.md tiene señales de estar desactualizado o llevas más de una sesión sin leerlo, verifica también info.md antes de comenzar.
 
 ## Preferencias
 - La informacion sobre el proyecto siempre la puedes encontrar en la carpeta "Docs" :
@@ -22,37 +23,48 @@ Siempre responde en español.
     - "< Nombre del proyecto >_arquitectura/project.md" : Tiene la arquitectura que tienes que construir ( si es la primera session tendras que construir la app desde aqui. Tambien te puede servir como guia aparte de info.md en sesiones posteriores)
     - "Claude_local.md" : Es tu MANUAL y el mas importante de todos los archivos . Tiene un resumen breve y simplificado sobre la app, la arquitectura base y los nombres de los archivos que con mas frecuencia se editan debido a su contenido. Aqui pondras cosas como main.py , core.py, config.py , cosas que necesites a la mano cuando tengas que rastrear algun bug de forma rapida dentro de la arquitectura del proyecto para no tener que volver a leer info.md denuevo. Este es tu manual de bolsillo , usalo SIEMPRE para evitar quemar tokens.
 
-    # Nota importante sobre DOCS
+---
 
-    - Al final de cada sesion el usuario dira algo como : " ESO SERIA TODO POR ESTA SESION " O " CON ESTO TERMINAMOS POR HOY " o similares.  ES TU OBLIGACION  actualizar y editar todos los archivos dentro de "docs" con los nuevos cambios que se hayan realizado ( si fuera necesario ), asi la siguiente sesion tendras toda la informacion y la arquitectura al dia.
+## Actualización de Docs
 
-    ## Política de commits
+### Durante la sesión — después de cada tarea significativa
+Después de cada tarea con cambios de código, arquitectura o comportamiento, actualiza los Docs afectados ANTES de continuar con la siguiente tarea. Indica explícitamente: "Docs actualizados: [lista de archivos]"
 
-    Existen **dos tipos de commits** con formatos distintos. Es importante no mezclarlos:
+### Al cierre de sesión — revisión final
+Cuando el usuario indique cierre ("NOS DEBEMOS ALGO?", "ESO SERIA TODO", "CON ESTO TERMINAMOS", etc.), revisa todos los archivos en `Docs/` para confirmar que están al día. Si falta algo, actualízalo. Luego haz el commit de cierre.
 
-    ### 1. Commit de cierre de sesión (solo Docs)
-    - Se hace **únicamente al final de la sesión**, después de actualizar los archivos en `Docs/`
-    - Incluye **solo los archivos de `Docs/`** en el staging
-    - Formato del mensaje: `[TIMESTAMP]  <frase breve resumiendo los cambios de la sesión>`
-    - Ejemplo: `[2025-01-15 18:30]  Añadido sistema de upgrade info y ventana de lista personal`
+## Tabla de mapeo — qué cambio actualiza qué archivo
 
-    ### 2. Commit de proyecto (cambios en el código)
-    - Se hace cuando se completa una feature, bugfix u otro cambio significativo en el código
-    - Incluye los archivos modificados relevantes (NO los de `Docs/` salvo que sean parte del cambio)
-    - Formato del mensaje: detallado y estándar, describiendo qué cambió y por qué
-    - Ejemplo: `Fix: corregir EnableMouse en textura del icono de alerta (BisRaidAlert_UI.lua)`
+| Si cambió...                                        | Actualiza...                  |
+|-----------------------------------------------------|-------------------------------|
+| Flujo, dependencias entre módulos, archivos clave   | arquitectura/project.md       |
+| Funcionalidad, features, módulos, comportamiento    | info.md                       |
+| Archivos que editas frecuentemente o resumen rápido | claude_local.md               |
+| Nombre o estructura de carpetas                     | info.md + claude_local.md     |
+| Decisión arquitectónica importante                  | arquitectura/project.md       |
 
-    > **Regla clave**: Los commits de `Docs/` son ligeros (timestamp + frase). Los commits de código son descriptivos y detallados. Nunca pongas coautoría en ningún commit.
+---
 
-    Al final de la sesión respóndele al usuario qué archivos actualizaste dentro de `docs` (sin indicar el contenido) y confirma que ya hiciste el commit de cierre. Después el usuario puede cerrar el terminal.
+## Política de commits
 
-- Explica los cambios que haces antes de hacerlos.
-- Si hay varias formas de resolver algo, menciónalas antes de elegir.
-- Si tienes dudas o hay ambiguedad en lo que se tiene que decir, dilo explicitamente antes de hacer nada.
-- Avisa si algo puede romper código existente.
-- En los commits no pongas co autoria.
-- Crea siempre el repositorio git y variables de entorno antes de comenzar un proyecto y despues de realizar cambios (commits).
-- Crea siempre entorno virtuales antes de comenzar un proyecto, si un proyecto ya esta empezado y no ves variables de entorno , crealos de forma proactiva.
+Existen **dos tipos de commits** con formatos distintos. No mezclarlos:
+
+### 1. Commit de cierre de sesión (solo Docs)
+- Se hace **únicamente al final de la sesión**, después de actualizar los archivos en `Docs/`
+- Incluye **solo los archivos de `Docs/`** en el staging
+- Formato: `[TIMESTAMP]  <frase breve resumiendo los cambios de la sesión>`
+- Ejemplo: `[2025-01-15 18:30]  Añadido sistema de upgrade info y ventana de lista personal`
+
+### Checklist antes de cada commit de código
+- [ ] ¿Cambió la arquitectura o el flujo entre módulos? → actualizar `arquitectura/project.md`
+- [ ] ¿Cambié, agregué o eliminé una feature o módulo? → actualizar `info.md`
+- [ ] ¿Cambió algún archivo que aparece en `claude_local.md`? → actualizar `claude_local.md`
+
+### 2. Commit de proyecto (cambios en el código)
+- Feature, bugfix u otro cambio significativo
+- Incluye los archivos modificados relevantes (NO los de `Docs/` salvo que sean parte del cambio)
+- Formato: detallado y estándar, describiendo qué cambió y por qué
+- Sin coautoría en ningún commit
 
 ---
 
@@ -95,11 +107,12 @@ rhv-webapp/
 | Archivo | Motivo |
 |---------|--------|
 | `api.py` | Cambios en lógica de consulta a Raid Helper, procesamiento de eventos |
-| `static/app.js` | Cambios en UI, filtros frontend, auto-reload, detalle de eventos |
+| `static/app.js` | Cambios en UI, filtros frontend, auto-reload, detalle de eventos, launchAlarm |
 | `static/style.css` | Ajustes visuales |
 | `server.py` | Nuevas rutas o cambios en endpoints |
 | `config.py` | Si cambian los endpoints de la API de Raid Helper |
 | `filtros.py` | Nuevos tipos de filtro |
+| `launcher.bat` | Arranque local para pruebas antes de push (activa venv + Flask dev) |
 
 ---
 
@@ -118,6 +131,7 @@ rhv-webapp/
 - Los eventos se consultan en paralelo con `ThreadPoolExecutor(max_workers=4)`.
 - El frontend guarda credenciales en `localStorage` del navegador.
 - Si Raid Helper cambia su API, los endpoints están centralizados en `config.py`.
+- **Integración Alarma Pro:** `launchAlarm(raidId, signup)` en `app.js` dispara `rhv://raid?id=...` + parámetros opcionales de signup (sn/ss/sc). Al embeber JSON en `onclick="..."`, usar siempre `.replace(/"/g, '&quot;')` para no romper el atributo HTML. El toast de confirmación usa `showToast()` + clase `.rhv-toast` en CSS.
 
 ---
 
