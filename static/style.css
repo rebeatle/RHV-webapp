@@ -597,3 +597,27 @@ tr.color-later td { color: var(--text); }
   color: var(--muted);
   text-align: center;
 }
+
+/* ── Toast de alarma ── */
+.rhv-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0,0,0,.5);
+  opacity: 0;
+  transition: opacity .2s ease, transform .2s ease;
+  pointer-events: none;
+  z-index: 9999;
+}
+.rhv-toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

@@ -348,7 +348,7 @@ function renderTable(eventos) {
       <td>${escHtml(rol)}</td>
       <td class="col-alarma">
         <button class="btn-alarm" title="${t('btnAlarma')}"
-          onclick="event.stopPropagation(); launchAlarm('${escHtml(String(ev.raidId))}', ${JSON.stringify(ev._signup || null)})">🔔</button>
+          onclick="event.stopPropagation(); launchAlarm('${escHtml(String(ev.raidId))}', ${JSON.stringify(ev._signup || null).replace(/"/g, '&quot;')})">🔔</button>
       </td>
     `;
     tr.addEventListener('click', () => openModal(ev.raidId, ev));
@@ -466,7 +466,7 @@ function renderModal(detalle, signup) {
 
   html += `
     <div class="modal-alarm-row">
-      <button class="btn-alarm-modal" onclick="launchAlarm('${escHtml(String(detalle.raidid || detalle.raidId || ''))}', ${JSON.stringify(signup || null)})">
+      <button class="btn-alarm-modal" onclick="launchAlarm('${escHtml(String(detalle.raidid || detalle.raidId || ''))}', ${JSON.stringify(signup || null).replace(/"/g, '&quot;')})">
         🔔 ${t('btnAlarma')}
       </button>
     </div>`;
@@ -592,6 +592,19 @@ function launchAlarm(raidId, signup) {
     if (signup.className) p.set('sc', signup.className);
   }
   window.location.href = `rhv://raid?${p.toString()}`;
+  showToast(t('alarmaSent'));
+}
+
+function showToast(msg) {
+  const toast = document.createElement('div');
+  toast.className = 'rhv-toast';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('rhv-toast--visible'));
+  setTimeout(() => {
+    toast.classList.remove('rhv-toast--visible');
+    toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+  }, 2800);
 }
 
 function escHtml(str) {
