@@ -131,9 +131,12 @@ In Discord, send the **Raid Helper** bot this command:
 ```bash
 git clone https://github.com/rebeatle/rhv-webapp
 cd rhv-webapp
+python -m venv venv
 pip install -r requirements.txt
 python server.py
 ```
+
+**Windows shortcut:** after installing dependencies, just double-click `launcher.bat` (or run it from the terminal). It activates the virtual environment and starts the server automatically.
 
 Open `http://localhost:5000` in your browser and complete the initial setup.
 
