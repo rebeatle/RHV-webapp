@@ -1,16 +1,16 @@
-# English Version
+# Versión en Español
 
-> 🌐 [Versión en español](README.es.md)
+> 🌐 [English version](README.en.md)
 
 # ⚔ Raid Helper Viewer — Web App
 
-A web dashboard to visualize all your Raid Helper events across multiple
-Discord servers from a single screen, directly in the browser.
+Visualiza todos tus eventos de Raid Helper en múltiples servidores
+de Discord desde una sola pantalla, directamente en el navegador.
 
-> Built by [rebeatle](https://github.com/rebeatle) — because jumping between
-> 14 Discord channels just to check the calendar is a raid by itself.
+> Construido por [rebeatle](https://github.com/rebeatle) — porque saltar entre
+> 14 canales de Discord para ver el calendario es un raid en sí mismo.
 
-> 🖥️ Prefer the desktop version? → [RaidHelperCalendar](https://github.com/rebeatle/raidhelpercalendar)
+> 🖥️ ¿Preferís la versión de escritorio? → [RaidHelperCalendar](https://github.com/rebeatle/raidhelpercalendar)
 
 ---
 
@@ -26,20 +26,20 @@ Discord servers from a single screen, directly in the browser.
 
 ---
 
-## 🌐 Live Demo
+## 🌐 Demo en vivo
 
-**[Open the app](https://raid-helper-viewer.up.railway.app)**
+**[Abrir la app](https://raid-helper-viewer.up.railway.app)**
 
 ---
 
-## What is this?
+## ¿Qué es esto?
 
-If you use Raid Helper across multiple Discord servers, you know the pain of
-having to check channel by channel to see what raids are scheduled.
+Si usás Raid Helper en varios servidores de Discord, sabés el dolor de tener
+que revisar canal por canal para ver qué raids están programadas.
 
-RHV Web solves that: a single screen accessible from any browser,
-with all your upcoming events, filters, color coding by date proximity,
-and a mark showing which ones you're already signed up for.
+RHV Web resuelve eso: una sola pantalla accesible desde cualquier navegador,
+con todos tus eventos futuros, filtros, colores por proximidad de fecha,
+y la marca de en cuáles ya estás anotado.
 
 ![Main view](screenshots/main_view1.png)
 ![Main view](screenshots/main_view2.png)
@@ -48,85 +48,85 @@ and a mark showing which ones you're already signed up for.
 
 ---
 
-## Features
+## Características
 
-- 📅 **Unified view** of events from multiple servers
-- 🔴🟡🟢 **Color by proximity** — today, tomorrow, this week
-- ✅ **Mark your events** — instantly see where you're already signed up
-- 🔍 **Filters** by period, server, free text, and exact date
-- 📋 **Full event details** with role signups (Tanks, Healers, Melee, Ranged)
-- 🔄 **Auto-reload** every 5 minutes in the background
-- 🔁 **Automatic retries** for servers that didn't respond on load
-- 🌐 **Spanish / English** — switchable from within the app
-- 🔒 **No database** — your credentials are never stored on the server
-
----
-
-## Privacy & Security
-
-Your credentials **never leave your browser** except in requests to the server,
-and the server discards them immediately without storing them.
-
-| What | Where it's stored |
-|------|-------------------|
-| Access Token | Only in your browser's `localStorage` |
-| User API Key | Only in your browser's `localStorage` |
-| On the server | Nothing — discarded after each request |
+- 📅 **Vista unificada** de eventos de múltiples servidores
+- 🔴🟡🟢 **Colores por proximidad** — hoy, mañana, esta semana
+- ✅ **Marca tus eventos** — saber de un vistazo dónde ya estás anotado
+- 🔍 **Filtros** por período, servidor, texto libre y fecha exacta
+- 📋 **Detalle completo** de cada evento con signups por rol (Tanks, Healers, Melee, Ranged)
+- 🔄 **Auto-recarga** cada 5 minutos en segundo plano
+- 🔁 **Reintentos automáticos** para servidores que no respondieron al cargar
+- 🌐 **Español / Inglés** — cambiable desde la app
+- 🔒 **Sin base de datos** — tus credenciales nunca se almacenan en el servidor
 
 ---
 
-## How to use it
+## Privacidad y seguridad
 
-### 1. Access Token *(required)*
+Tus credenciales **nunca salen de tu navegador** salvo en los requests
+al servidor, y el servidor las descarta inmediatamente sin guardarlas.
 
-This is your personal session on raid-helper.xyz. To get it:
+| Qué | Dónde se guarda |
+|-----|-----------------|
+| Access Token | Solo en `localStorage` de tu navegador |
+| User API Key | Solo en `localStorage` de tu navegador |
+| En el servidor | Nada — se descarta tras cada request |
 
-1. Go to [raid-helper.xyz](https://raid-helper.xyz) and log in with Discord
-2. Open the calendar for any server
-3. Press `F12` to open DevTools
-4. Go to the **Network** tab and filter by **Fetch/XHR**
-5. Reload the page with `F5`
-6. Find the **`events/`** call → **Payload** tab
-7. Copy the value of `accessToken` (the long string, no quotes)
+---
 
-> ⚠️ This token is personal — do not share it with anyone.
-> It expires over time. If the app stops showing events, update it
-> from the Settings menu.
+## Cómo usarla
 
-### 2. User API Key *(optional)*
+### 1. Access Token *(requerido)*
 
-Allows marking with ✅ the events you're already signed up for.
+Es tu sesión personal en raid-helper.xyz. Para obtenerlo:
 
-In Discord, send the **Raid Helper** bot this command:
+1. Ve a [raid-helper.xyz](https://raid-helper.xyz) e iniciá sesión con Discord
+2. Abrí el calendario de cualquier servidor
+3. Presioná `F12` para abrir DevTools
+4. Ve a la pestaña **Red** (Network) y filtrá por **Fetch/XHR**
+5. Recargá la página con `F5`
+6. Buscá la llamada **`events/`** → pestaña **Carga útil** (Payload)
+7. Copiá el valor de `accessToken` (la cadena larga, sin comillas)
+
+> ⚠️ Este token es personal — no lo compartas con nadie.
+> Expira con el tiempo. Si la app deja de mostrar eventos, actualizalo
+> desde el menú de Configuración.
+
+### 2. User API Key *(opcional)*
+
+Permite marcar con ✅ los eventos donde ya estás anotado.
+
+En Discord, enviále al bot **Raid Helper** el comando:
 ```
 /usersettings apikey show
 ```
 
 ---
 
-## Colors
+## Colores
 
-| Color | Meaning |
-|-------|---------|
-| 🔴 Red | Event is today |
-| 🟡 Yellow | Event is tomorrow |
-| 🟢 Green | Event is this week |
-| ⚪ White | Event is later |
+| Color | Significado |
+|-------|-------------|
+| 🔴 Rojo | El evento es hoy |
+| 🟡 Amarillo | El evento es mañana |
+| 🟢 Verde | El evento es esta semana |
+| ⚪ Blanco | El evento es más adelante |
 
 ---
 
-## Tech Stack
+## Stack técnico
 
-| Layer | Technology |
-|-------|------------|
+| Capa | Tecnología |
+|------|------------|
 | Backend | Python 3.11 + Flask |
-| Frontend | Vanilla JS — no frameworks |
+| Frontend | Vanilla JS — sin frameworks |
 | Deploy | Railway + Gunicorn |
-| Styles | Dark theme inspired by Discord |
+| Estilos | Dark theme inspirado en Discord |
 
 ---
 
-## Run locally
+## Correr localmente
 
 ```bash
 git clone https://github.com/rebeatle/rhv-webapp
@@ -136,78 +136,79 @@ pip install -r requirements.txt
 python server.py
 ```
 
-**Windows shortcut:** after installing dependencies, just double-click `launcher.bat` (or run it from the terminal). It activates the virtual environment and starts the server automatically.
+**Atajo en Windows:** una vez instaladas las dependencias, hacé doble clic en `launcher.bat` (o ejecutalo desde la terminal). Activa el entorno virtual e inicia el servidor automáticamente.
 
-Open `http://localhost:5000` in your browser and complete the initial setup.
+Abrí `http://localhost:5000` en tu navegador y completá la configuración inicial.
 
 ---
 
-## Self-host on Railway
+## Deploy propio en Railway
 
-1. Fork this repository
-2. Create a new project on [Railway](https://railway.app) and connect your fork
-3. Add the environment variable `FLASK_SECRET_KEY` with a secure random value
-4. Railway detects the `Procfile` automatically — done
+1. Hacé fork de este repositorio
+2. Creá un nuevo proyecto en [Railway](https://railway.app) y conectá tu fork
+3. Agregá la variable de entorno `FLASK_SECRET_KEY` con un valor aleatorio seguro
+4. Railway detecta el `Procfile` automáticamente — listo
 
 ---
 
 ## FAQ
 
-**Why isn't the app showing events?**
-Most likely your Access Token has expired. Go to the Settings menu
-and follow the steps to get a new one.
+**¿Por qué la app no muestra eventos?**
+Lo más probable es que tu Access Token haya expirado. Ve al menú de
+Configuración y seguí los pasos para obtener uno nuevo.
 
-**Why don't I see ✅ on my events?**
-You need to configure the User API Key from the Settings menu.
+**¿Por qué no veo el ✅ en mis eventos?**
+Necesitás configurar la User API Key desde el menú de Configuración.
 
-**Is it official? Does it have Raid Helper's permission?**
-This is not an official Raid Helper product. It uses the same API as the
-raid-helper.xyz frontend with your personal session. Each user authenticates
-with their own credentials. If Raid Helper changes its API, it may stop
-working until the project is updated.
+**¿Es oficial? ¿Tiene permiso de Raid Helper?**
+No es un producto oficial. Usa la misma API que usa el frontend de
+raid-helper.xyz con tu sesión personal. Cada usuario autentica con
+sus propias credenciales. Si Raid Helper cambia su API, puede dejar
+de funcionar hasta que se actualice el proyecto.
 
-**Are my credentials safe?**
-Yes. The server never stores your credentials — it uses them to query
-Raid Helper and immediately discards them. No database, no user logs.
+**¿Mis datos están seguros?**
+Sí. El servidor nunca guarda tus credenciales — las usa para consultar
+Raid Helper y las descarta. No hay base de datos ni logs de usuario.
 
 ---
 
-## Technical Notes
+## Notas técnicas
 
-RHV replicates the calls made by the raid-helper.xyz frontend using
-the Discord OAuth session `accessToken`. There is no publicly documented API —
-this was discovered by observing the network traffic of the official website.
+RHV replica las llamadas que hace el frontend de raid-helper.xyz usando
+el `accessToken` de sesión OAuth de Discord. No existe una API pública
+documentada — fue descubierto observando el tráfico de red del sitio oficial.
 
 ---
 
 ## Roadmap
 
-Features planned for future versions:
+Funcionalidades planeadas para futuras versiones:
 
-- 📤 **Export to ICS** — generate an `.ics` file from the selected event
-  to import directly into Google Calendar, Outlook, or any calendar client.
+- 📤 **Exportar a ICS** — generar un archivo `.ics` del evento seleccionado
+  para importarlo directamente a Google Calendar, Outlook o cualquier
+  cliente de calendario.
 
-- 🎯 **Filter by role** — see which events have open spots for a specific
-  role (Tanks, Healers, Melee, Ranged), making it easier to decide where
-  to sign up.
+- 🎯 **Filtro por rol** — ver qué eventos tienen cupo disponible para un
+  rol específico (Tanks, Healers, Melee, Ranged), útil para decidir
+  dónde anotarse.
 
-- 🔃 **Sortable columns** — sort the table by server, participant count,
-  or other fields by clicking the column header.
+- 🔃 **Ordenar columnas** — ordenar la tabla por servidor, cantidad de
+  participantes u otros campos haciendo click en el encabezado.
 
-- 📱 **Better mobile support** — optimize the table layout for small screens.
-
----
-
-## Contributions
-
-Pull requests are welcome. If something breaks due to changes in the
-Raid Helper API, open an issue.
+- 📱 **Mejor soporte móvil** — optimizar la vista de tabla para pantallas pequeñas.
 
 ---
 
-## Contact
+## Contribuciones
 
-To report bugs, suggestions, or commercial use:
+Pull requests bienvenidos. Si algo se rompe por un cambio en la API de
+Raid Helper, abrí un issue.
+
+---
+
+## Contacto
+
+Para reportar bugs, sugerencias o uso comercial:
 📧 rebeatle.dev@gmail.com
 
 ## ☕ Apoyar el proyecto
@@ -217,15 +218,16 @@ Si te resulta útil y quieres invitarme un café:
 [![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/rebeatle)
 ---
 
-## License
+## Licencia
 
-This project is licensed under **GNU GPL v3**.
+Este proyecto está bajo la licencia **GNU GPL v3**.
 
-You are free to use, study, and modify the code, but any distributed modified version must:
-- Also be open source under GPL v3
-- Give credit to the original author
-- **Not be sold or used commercially** without explicit permission from the author
+Podés usar, estudiar y modificar el código libremente, pero cualquier
+versión modificada que distribuyas debe:
+- Ser también de código abierto bajo GPL v3
+- Dar crédito al autor original
+- **No puede ser vendida ni usada con fines comerciales** sin permiso explícito del autor
 
 © 2026 [rebeatle](https://github.com/rebeatle) — All rights reserved under GPL v3.
 
-For commercial use or special agreements, contact the author directly.
+Para uso comercial o acuerdos especiales, contactá al autor directamente.
